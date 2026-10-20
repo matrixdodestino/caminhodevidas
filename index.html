@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caminho de Vida — Calculadora de Numerologia</title>
+<meta name="theme-color" content="#FFF6E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8EC; --sand:#FDEBD0; --peach:#FFE1B8;
+    --light:#FFFBEA; --lemon:#FFF07A; --honey:#FFD84D; --sun:#FFB627;
+    --amber:#FF9A1F; --ember:#F2700D; --rust:#A8470C; --clay:#7A3209;
+    --cocoa:#3A1D0A; --ink:#4E2D16; --muted:#8A6447;
+    --line:rgba(242,112,13,.20); --line-soft:rgba(242,112,13,.12);
+    --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.78);
+    --shadow:0 30px 70px -34px rgba(168,71,12,.42);
+    --aura:radial-gradient(circle, #FFFFFF 0%, #FFFBD6 10%, #FFF36B 26%, #FFD23A 40%, #FFB020 54%, #FF8E1F 66%, rgba(255,142,31,.45) 74%, rgba(255,142,31,0) 82%);
+    --aura-master:radial-gradient(circle, #FFFFFF 0%, #FFF1DE 10%, #FFC98A 28%, #FF9A5C 44%, #F2603A 58%, #D9452E 68%, rgba(217,69,46,.4) 76%, rgba(217,69,46,0) 84%);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+  body{
+    margin:0; color:var(--ink); font-family:"EB Garamond",Georgia,serif;
+    font-size:18px; line-height:1.7; background:var(--cream);
+    min-height:100vh; overflow-x:hidden;
+  }
+
+  /* ===== CAMADA DE AURAS ===== */
+  .auras{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;}
+  .auras::after{content:""; position:absolute; inset:0;
+    background:radial-gradient(120% 80% at 50% 120%, rgba(255,248,236,0) 40%, rgba(255,248,236,.7) 100%);}
+  .blob{position:absolute; border-radius:50%; background:var(--aura); filter:blur(42px); opacity:.55; will-change:transform;}
+  .blob.b1{width:min(90vw,760px); height:min(90vw,760px); top:-26vh; left:50%; margin-left:max(-45vw,-380px); opacity:.62; animation:drift1 26s ease-in-out infinite;}
+  .blob.b2{width:min(70vw,560px); height:min(70vw,560px); bottom:-22vh; left:-18vw; opacity:.42; animation:drift2 32s ease-in-out infinite;}
+  .blob.b3{width:min(60vw,480px); height:min(60vw,480px); top:38vh; right:-20vw; opacity:.36; animation:drift3 29s ease-in-out infinite;}
+  .blob.b4{width:min(40vw,320px); height:min(40vw,320px); top:12vh; left:-10vw; opacity:.28; animation:drift2 38s ease-in-out infinite reverse;}
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(2vw,4vh) scale(1.08)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,-6vh) scale(1.12)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0) scale(1.05)}50%{transform:translate(-5vw,-4vh) scale(.95)}}
+  #motes{position:fixed; inset:0; z-index:0; pointer-events:none;}
+
+  .wrap{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:clamp(36px,7vw,84px) 20px 90px;}
+
+  /* ===== HERO ===== */
+  .hero{text-align:center; position:relative;}
+  .eyebrow{font-family:"Cinzel",serif; letter-spacing:.42em; text-transform:uppercase;
+    font-size:11.5px; color:var(--rust); margin:0 0 22px; padding-left:.42em;}
+  .sun-mark{width:64px; height:64px; margin:0 auto 18px; border-radius:50%; background:var(--aura);
+    filter:blur(.5px); animation:breathe 6s ease-in-out infinite;}
+  h1{font-family:"Cormorant Garamond",serif; font-weight:300; letter-spacing:-.01em;
+    font-size:clamp(48px,11vw,96px); line-height:.95; margin:0 0 18px;
+    background:linear-gradient(180deg, var(--cocoa) 0%, var(--clay) 45%, var(--ember) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  h1 em{font-style:italic; font-weight:400;}
+  .lede{font-family:"Cormorant Garamond",serif; font-size:clamp(19px,2.6vw,24px);
+    font-style:italic; color:var(--muted); max-width:40ch; margin:0 auto; line-height:1.45;}
+
+  @keyframes breathe{0%,100%{transform:scale(1); opacity:.95}50%{transform:scale(1.07); opacity:1}}
+  @keyframes pulse{0%,100%{transform:scale(1); opacity:.85}50%{transform:scale(1.12); opacity:1}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ===== CARTÕES ===== */
+  .card{background:var(--glass); border:1px solid rgba(255,255,255,.85); border-radius:24px; padding:28px;
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.9);
+    -webkit-backdrop-filter:blur(18px) saturate(1.2); backdrop-filter:blur(18px) saturate(1.2);}
+
+  .form{margin-top:40px;}
+  .form-row{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end;}
+  .field{flex:1 1 120px; min-width:100px;}
+  .field.name{flex:1 1 100%;}
+  label{display:block; font-family:"Cinzel",serif; font-size:10.5px; letter-spacing:.24em;
+    text-transform:uppercase; color:var(--rust); margin:0 0 8px;}
+  label .opt{opacity:.7; text-transform:none; letter-spacing:normal; font-family:"Cormorant Garamond",serif; font-style:italic; font-size:14px; color:var(--muted);}
+  select,input[type=text]{width:100%; font-family:"EB Garamond",serif; font-size:17px;
+    color:var(--cocoa); background:rgba(255,255,255,.82); border:1px solid var(--line);
+    border-radius:14px; padding:13px 14px; appearance:none; -webkit-appearance:none; outline:none;
+    transition:border-color .2s, box-shadow .25s, background .2s;}
+  input::placeholder{color:#B89A80; font-style:italic;}
+  select:hover,input:hover{border-color:rgba(242,112,13,.38);}
+  select:focus,input:focus{border-color:var(--amber); background:#fff; box-shadow:0 0 0 4px rgba(255,182,39,.28), 0 8px 26px -10px rgba(255,154,31,.6);}
+  select{background-image:linear-gradient(45deg,transparent 50%,var(--ember) 50%),linear-gradient(135deg,var(--ember) 50%,transparent 50%);
+    background-position:calc(100% - 19px) 21px,calc(100% - 13px) 21px; background-size:6px 6px,6px 6px; background-repeat:no-repeat; padding-right:34px;}
+  option{background:#fff; color:var(--cocoa);}
+
+  .btn{position:relative; overflow:hidden; margin-top:22px; width:100%; font-family:"Cinzel",serif; font-weight:600;
+    letter-spacing:.18em; text-transform:uppercase; font-size:13.5px; color:var(--cocoa);
+    background:linear-gradient(180deg,#FFD95C 0%,#FFB627 55%,#FF9A1F 100%); border:none; cursor:pointer;
+    padding:17px 18px; border-radius:16px; transition:transform .18s, box-shadow .25s;
+    box-shadow:0 16px 40px -14px rgba(255,140,20,.85), inset 0 1px 0 rgba(255,255,255,.65);}
+  .btn::after{content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%;
+    background:linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+    transform:skewX(-20deg); animation:shine 4.5s ease-in-out infinite;}
+  @keyframes shine{0%,62%{left:-60%}100%{left:130%}}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 22px 50px -14px rgba(255,140,20,.95), inset 0 1px 0 rgba(255,255,255,.65);}
+  .btn:active{transform:translateY(0);}
+  .btn:focus-visible,.buy:focus-visible,.cta-leitura:focus-visible,.cnav:focus-visible{outline:2px solid var(--ember); outline-offset:3px;}
+  .err{color:#B3261E; font-style:italic; margin:12px 2px 0; min-height:1.2em; font-size:15px; text-align:center;}
+
+  /* ===== CTA ===== */
+  .cta-band{position:relative; overflow:hidden; margin-top:22px; text-align:center; border-radius:24px; padding:30px 22px;
+    background:linear-gradient(180deg, rgba(255,246,224,.75), rgba(255,233,200,.7));
+    border:1px solid rgba(255,255,255,.85); box-shadow:var(--shadow);}
+  .cta-band::before{content:""; position:absolute; width:340px; height:340px; left:50%; top:-210px; margin-left:-170px;
+    border-radius:50%; background:var(--aura); filter:blur(30px); opacity:.55; animation:breathe 7s ease-in-out infinite;}
+  .cta-band > *{position:relative;}
+  .cta-hint{font-family:"Cormorant Garamond",serif; font-style:italic; font-size:20px; color:var(--ink);
+    max-width:44ch; margin:0 auto 20px; line-height:1.45;}
+  .cta-leitura{display:inline-block; text-decoration:none; font-family:"Cinzel",serif; font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; font-size:13.5px; color:#fff;
+    padding:17px 30px; border-radius:999px; background:linear-gradient(180deg,#FF9A1F,#E8600A);
+    box-shadow:0 18px 44px -14px rgba(232,96,10,.85), inset 0 1px 0 rgba(255,255,255,.35); transition:transform .18s, box-shadow .25s;
+    text-shadow:0 1px 0 rgba(120,40,0,.35);}
+  .cta-leitura:hover{transform:translateY(-2px); box-shadow:0 24px 54px -14px rgba(232,96,10,.95), inset 0 1px 0 rgba(255,255,255,.35);}
+  .cta-note{font-family:"Cinzel",serif; letter-spacing:.16em; text-transform:uppercase; font-size:9.5px; color:var(--muted); margin:16px 0 0;}
+
+  /* ===== RESULTADO ===== */
+  #result{margin-top:48px; opacity:0; transform:translateY(16px); transition:opacity .8s, transform .8s;}
+  #result.show{opacity:1; transform:none;}
+  .reveal{text-align:center; position:relative; padding:10px 0 6px;}
+  .reveal > :not(.bignum){position:relative; z-index:2;}
+  .reveal .greet{font-family:"Cormorant Garamond",serif; font-style:italic; color:var(--rust); font-size:22px; margin:0 0 4px;}
+  .reveal .kicker{font-family:"Cinzel",serif; letter-spacing:.32em; text-transform:uppercase; font-size:11px; color:var(--muted); margin:0;}
+
+  .bignum{position:relative; display:flex; align-items:center; justify-content:center;
+    width:280px; height:280px; margin:10px auto 14px; z-index:0;}
+  .bignum .halo{position:absolute; inset:0; border-radius:50%; background:var(--aura); animation:pulse 5s ease-in-out infinite; filter:blur(2px);}
+  .bignum .glow{position:absolute; inset:-14px; border-radius:50%; background:var(--aura); filter:blur(30px); opacity:.4; animation:breathe 7s ease-in-out infinite;}
+  .bignum .ring{position:absolute; inset:46px; border-radius:50%; border:1px dashed rgba(168,71,12,.28); animation:spin 60s linear infinite;}
+  .bignum .ring::before{content:"✦"; position:absolute; top:-9px; left:50%; margin-left:-6px; font-size:12px; color:var(--ember);}
+  .bignum.master .halo,.bignum.master .glow{background:var(--aura-master);}
+  .bignum span{position:relative; font-family:"Cormorant Garamond",serif; font-weight:500; font-size:96px; line-height:1; color:var(--cocoa);
+    text-shadow:0 0 24px rgba(255,255,255,.95), 0 0 2px rgba(255,255,255,1);}
+  .bignum.master span{font-size:84px;}
+
+  .arqui{font-family:"Cormorant Garamond",serif; font-weight:500; font-style:italic; font-size:clamp(30px,6vw,44px); color:var(--cocoa); margin:0 0 4px; line-height:1.05;}
+  .titulo{font-family:"Cinzel",serif; letter-spacing:.26em; text-transform:uppercase; font-size:12px; color:var(--rust); margin:0 0 6px;}
+  .master-tag{display:inline-block; font-family:"Cinzel",serif; letter-spacing:.2em; text-transform:uppercase; font-size:10px;
+    color:#fff; background:linear-gradient(180deg,#F2703A,#D9452E); border-radius:999px; padding:5px 14px; margin-top:8px;
+    box-shadow:0 8px 20px -8px rgba(217,69,46,.7);}
+
+  .chaves{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:20px 0 4px;}
+  .chip{font-family:"Cinzel",serif; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--clay);
+    background:linear-gradient(180deg,#FFF6D9,#FFE6B0); border:1px solid rgba(255,182,39,.55); border-radius:999px; padding:7px 14px;}
+
+  .steps{margin-top:28px; background:rgba(255,250,238,.75); border:1px solid var(--line-soft); border-radius:18px; padding:18px 20px;}
+  .steps h3{font-family:"Cinzel",serif; font-size:10.5px; font-weight:500; letter-spacing:.26em; text-transform:uppercase; color:var(--muted); margin:0 0 12px; text-align:center;}
+  .steps .row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:16px; padding:6px 0; border-bottom:1px dashed var(--line);}
+  .steps .row:last-child{border-bottom:none;}
+  .steps .lab{font-family:"Cinzel",serif; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--rust); flex:0 0 auto;}
+  .steps .calc{color:var(--muted); flex:1; text-align:center;}
+  .steps .res{color:var(--cocoa); font-weight:500; min-width:1.6em; text-align:right;}
+  .steps .final{margin-top:4px; padding-top:10px;}
+  .steps .final .lab{color:var(--ember);}
+  .steps .final .res{display:inline-grid; place-items:center; min-width:38px; height:38px; border-radius:50%; background:var(--aura);
+    font-family:"Cormorant Garamond",serif; font-size:21px; font-weight:600; text-align:center;}
+
+  .sections{margin-top:26px; display:grid; gap:14px;}
+  .sec{background:rgba(255,255,255,.7); border:1px solid var(--line-soft); border-radius:18px; padding:20px 22px; position:relative;}
+  .sec .h{font-family:"Cinzel",serif; font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--ember); margin:0 0 8px; display:flex; align-items:center; gap:10px;}
+  .sec .h::before{content:""; width:10px; height:10px; border-radius:50%; background:var(--aura); box-shadow:0 0 10px 2px rgba(255,182,39,.7); flex:0 0 auto;}
+  .sec p{margin:0; color:var(--ink);}
+  .sec.desc{background:linear-gradient(180deg, rgba(255,247,226,.9), rgba(255,255,255,.7));}
+  .sec.desc p{font-family:"Cormorant Garamond",serif; font-size:21px; line-height:1.55; color:var(--cocoa);}
+  .dual{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .mini{background:rgba(255,255,255,.7); border:1px solid var(--line-soft); border-radius:14px; padding:14px 16px; text-align:center;}
+  .mini .t{font-family:"Cinzel",serif; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin:0 0 4px;}
+  .mini .v{font-family:"Cormorant Garamond",serif; font-size:22px; color:var(--cocoa);}
+  .mini.baixa .v{color:#B3361E;} .mini.alta .v{color:#2E7A4B;}
+
+  .locked-preview{position:relative; padding-bottom:10px;}
+  .locked-preview .fade-mask{position:absolute; left:-2px; right:-2px; bottom:0; height:190px; pointer-events:none;
+    background:linear-gradient(180deg, rgba(255,251,243,0), rgba(255,251,243,.97) 78%);}
+
+  .lock{position:relative; overflow:hidden; margin-top:4px; text-align:center; border-radius:22px; padding:34px 22px 30px;
+    background:linear-gradient(180deg, #FFF4DB, #FFE7C2); border:1px solid rgba(255,182,39,.45);}
+  .lock::before{content:""; position:absolute; width:420px; height:420px; left:50%; top:-280px; margin-left:-210px;
+    border-radius:50%; background:var(--aura); filter:blur(34px); opacity:.6; animation:breathe 7s ease-in-out infinite;}
+  .lock > *{position:relative;}
+  .lock-orb{width:46px; height:46px; margin:0 auto 12px; border-radius:50%; background:var(--aura); display:grid; place-items:center;
+    animation:pulse 4s ease-in-out infinite;}
+  .lock-orb svg{width:18px; height:18px; color:var(--clay);}
+  .lock h3{font-family:"Cormorant Garamond",serif; font-weight:500; font-style:italic; font-size:30px; color:var(--cocoa); margin:0 0 8px; line-height:1.1;}
+  .lock-sub{max-width:46ch; margin:0 auto 18px; color:var(--ink);} .lock-sub b{color:var(--rust);}
+  .lock-list{list-style:none; padding:0; margin:0 auto 24px; max-width:360px; text-align:left;}
+  .lock-list li{position:relative; padding-left:28px; margin:0 0 10px; color:var(--ink);}
+  .lock-list li::before{content:"✦"; position:absolute; left:4px; color:var(--ember); font-size:12px; top:4px;}
+  .lock .buy{display:inline-block; text-decoration:none; font-family:"Cinzel",serif; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    font-size:13px; color:#fff; padding:17px 28px; border-radius:999px; background:linear-gradient(180deg,#FF9A1F,#E8600A);
+    box-shadow:0 18px 44px -14px rgba(232,96,10,.85), inset 0 1px 0 rgba(255,255,255,.35); transition:transform .18s;
+    text-shadow:0 1px 0 rgba(120,40,0,.35);}
+  .lock .buy:hover{transform:translateY(-2px);}
+  .lock-note{font-family:"Cormorant Garamond",serif; font-style:italic; color:var(--muted); font-size:15px; margin:16px 0 0;}
+
+  /* ===== EDUCATIVO ===== */
+  .ornament{display:flex; align-items:center; justify-content:center; gap:14px; margin:72px 0 22px; color:var(--ember);}
+  .ornament::before,.ornament::after{content:""; height:1px; width:min(28vw,180px);
+    background:linear-gradient(90deg, rgba(242,112,13,0), rgba(242,112,13,.45));}
+  .ornament::after{transform:scaleX(-1);}
+  .ornament i{width:14px; height:14px; border-radius:50%; background:var(--aura); box-shadow:0 0 18px 6px rgba(255,182,39,.6);}
+  .sec-eyebrow{font-family:"Cinzel",serif; letter-spacing:.42em; text-transform:uppercase; font-size:10.5px; color:var(--rust); text-align:center; margin:0 0 6px; padding-left:.42em;}
+  .sec-title{font-family:"Cormorant Garamond",serif; font-weight:400; font-size:clamp(34px,7vw,54px); line-height:1.05; text-align:center; margin:0 0 26px; color:var(--cocoa);}
+  .sec-title em{font-style:italic; color:var(--ember);}
+  .sobre-body{max-width:60ch; margin:0 auto 30px;}
+  .sobre-body p{margin:0 0 16px;}
+  .sobre-body p:first-child::first-letter{font-family:"Cormorant Garamond",serif; float:left; font-size:64px; line-height:.8; padding:8px 10px 0 0; color:var(--ember);}
+  .sobre-body b{color:var(--clay); font-weight:600;}
+  .metodo{margin:0 0 34px;}
+  .metodo-titulo{font-family:"Cinzel",serif; letter-spacing:.24em; text-transform:uppercase; font-size:11.5px; color:var(--rust); margin:0 0 18px;}
+  .passo{display:flex; gap:16px; align-items:flex-start; margin:0 0 16px;}
+  .passo:last-child{margin-bottom:0;}
+  .passo .pn{flex:0 0 34px; height:34px; border-radius:50%; display:grid; place-items:center; font-family:"Cormorant Garamond",serif; font-weight:600; font-size:18px;
+    color:var(--cocoa); background:var(--aura); box-shadow:0 0 16px 2px rgba(255,182,39,.45);}
+  .passo b{color:var(--cocoa);} .passo .ex{display:block; margin-top:5px; color:var(--muted); font-size:15.5px; font-style:italic; font-family:"Cormorant Garamond",serif;}
+
+  .caminhos{margin-top:8px;}
+  .caminhos-lede{text-align:center; max-width:56ch; margin:0 auto 24px; color:var(--muted);
+    font-family:"Cormorant Garamond",serif; font-style:italic; font-size:19px; line-height:1.55;}
+  .carrossel-wrap{position:relative;}
+  .carrossel{display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+    padding:10px 2px 22px; scrollbar-width:none; -ms-overflow-style:none; -webkit-overflow-scrolling:touch;}
+  .carrossel::-webkit-scrollbar{display:none;}
+  .ccard{position:relative; overflow:hidden; scroll-snap-align:center; flex:0 0 84%; max-width:290px;
+    background:var(--glass-strong); border:1px solid rgba(255,255,255,.9); border-radius:22px; padding:26px 22px 28px; text-align:center;
+    display:flex; flex-direction:column; align-items:center; box-shadow:0 22px 50px -30px rgba(168,71,12,.5);}
+  .ccard .corb{position:relative; width:118px; height:118px; display:grid; place-items:center; margin:-4px 0 2px;}
+  .ccard .corb::before{content:""; position:absolute; inset:0; border-radius:50%; background:var(--aura); animation:breathe 6s ease-in-out infinite;}
+  .ccard.master .corb::before{background:var(--aura-master);}
+  .ccard .cnum{position:relative; font-family:"Cormorant Garamond",serif; font-weight:500; font-size:52px; line-height:1; color:var(--cocoa);
+    text-shadow:0 0 16px rgba(255,255,255,.95);}
+  .ccard .carqui{font-family:"Cormorant Garamond",serif; font-weight:500; font-style:italic; color:var(--cocoa); font-size:25px; margin:8px 0 4px; line-height:1.15;}
+  .ccard .ctit{font-family:"Cinzel",serif; letter-spacing:.2em; text-transform:uppercase; font-size:10px; color:var(--rust);}
+  .ccard .ctag{display:inline-block; font-family:"Cinzel",serif; letter-spacing:.16em; text-transform:uppercase; font-size:9px;
+    color:#fff; background:linear-gradient(180deg,#F2703A,#D9452E); border-radius:999px; padding:4px 12px; margin-top:10px;}
+  .ccard .cteaser{margin:12px 0 0; font-size:16px; color:var(--ink); font-family:"Cormorant Garamond",serif; line-height:1.5;}
+  .cnav{position:absolute; top:50%; transform:translateY(-60%); z-index:3; width:42px; height:42px;
+    border-radius:50%; border:1px solid rgba(255,255,255,.9); background:rgba(255,255,255,.88); color:var(--ember);
+    font-family:"Cormorant Garamond",serif; font-size:28px; line-height:1; cursor:pointer; display:grid; place-items:center;
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); box-shadow:0 10px 26px -10px rgba(168,71,12,.5);
+    transition:color .2s, opacity .2s, transform .2s; padding-bottom:4px;}
+  .cnav.prev{left:-6px;} .cnav.next{right:-6px;}
+  .cnav:hover{color:var(--clay); transform:translateY(-60%) scale(1.06);}
+  .cnav[disabled]{opacity:.3; cursor:default; transform:translateY(-60%);}
+  .cdots{display:flex; gap:7px; justify-content:center; margin-top:2px; flex-wrap:wrap; max-width:300px; margin-left:auto; margin-right:auto;}
+  .cdot{width:8px; height:8px; border-radius:50%; background:rgba(242,112,13,.22); border:none; padding:0; cursor:pointer; transition:background .25s, transform .25s, box-shadow .25s;}
+  .cdot.on{background:var(--amber); transform:scale(1.35); box-shadow:0 0 10px 2px rgba(255,182,39,.7);}
+
+  footer{margin-top:64px; text-align:center; color:var(--muted); font-family:"Cormorant Garamond",serif; font-style:italic; font-size:16px;}
+  footer .fsun{width:28px; height:28px; margin:0 auto 12px; border-radius:50%; background:var(--aura);}
+  footer b{color:var(--rust); font-style:normal; font-family:"Cinzel",serif; font-weight:500; letter-spacing:.22em; font-size:11.5px;}
+
+  @media (max-width:560px){
+    body{font-size:17px;} .card{padding:20px;} .dual{grid-template-columns:1fr;}
+    .bignum{width:230px; height:230px;} .bignum span{font-size:84px;} .bignum.master span{font-size:72px;}
+    .cnav.prev{left:-4px;} .cnav.next{right:-4px;}
+    .steps{padding:16px;} .sec{padding:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation:none!important; transition:none!important;} html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+<div class="auras" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+<canvas id="motes" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="hero">
+    <div class="sun-mark" aria-hidden="true"></div>
+    <p class="eyebrow">by @matrixdodestino</p>
+    <h1>Caminho <em>de</em> Vida</h1>
+    <p class="lede">O número que revela a missão central da sua existência, escondido na sua data de nascimento.</p>
+  </header>
+
+  <div class="card form">
+    <div class="form-row">
+      <div class="field"><label for="dia">Dia</label><select id="dia"></select></div>
+      <div class="field"><label for="mes">Mês</label><select id="mes"></select></div>
+      <div class="field"><label for="ano">Ano</label><select id="ano"></select></div>
+    </div>
+    <div class="form-row" style="margin-top:14px;">
+      <div class="field name">
+        <label for="nome">Nome <span class="opt">(opcional)</span></label>
+        <input type="text" id="nome" placeholder="para personalizar a leitura" autocomplete="off">
+      </div>
+    </div>
+    <button class="btn" id="go">Revelar meu número</button>
+    <p class="err" id="err" role="alert"></p>
+  </div>
+
+  <div class="cta-band">
+    <p class="cta-hint">Já sabe que quer? Peça a sua leitura personalizada, feita à mão para o seu número.</p>
+    <a id="cta-leitura" class="cta-leitura" target="_blank" rel="noopener">Faça sua leitura — R$ 29,90</a>
+    <p class="cta-note">Entrega em PDF · pelo WhatsApp · by @matrixdodestino</p>
+  </div>
+
+  <div id="result" aria-live="polite"></div>
+
+  <section class="sobre">
+    <div class="ornament" aria-hidden="true"><i></i></div>
+    <p class="sec-eyebrow">O que é</p>
+    <h2 class="sec-title">O <em>Caminho</em> de Vida</h2>
+    <div class="sobre-body">
+      <p>O <b>Caminho de Vida</b> — também chamado de Número do Destino — é o número mais importante da Numerologia. Ele revela a <b>missão central</b> da sua existência: os talentos que você trouxe para este plano, os desafios que veio superar e a direção mais profunda da sua jornada. Enquanto outros números falam de camadas específicas de quem você é, o Caminho de Vida é o fio que costura toda a sua história.</p>
+      <p>Ele nasce da sua <b>data de nascimento</b>, que guarda um código vibracional único. O cálculo é simples e antigo — herança da ideia, defendida desde Pitágoras, de que os números carregam energia e significado.</p>
+    </div>
+
+    <div class="metodo card">
+      <p class="metodo-titulo">Como se calcula</p>
+      <div class="passo"><span class="pn">1</span><div><b>Reduza cada parte da data</b> — dia, mês e ano — somando seus algarismos até chegar a um único dígito. <span class="ex">Ex: 24 → 2+4 = 6 · 07 → 7 · 1997 → 1+9+9+7 = 26 → 2+6 = 8</span></div></div>
+      <div class="passo"><span class="pn">2</span><div><b>Some os três resultados</b> e reduza novamente até um único dígito. <span class="ex">Ex: 6 + 7 + 8 = 21 → 2+1 = 3 · Caminho de Vida 3</span></div></div>
+      <div class="passo"><span class="pn">3</span><div><b>Exceção dos Números Mestres:</b> se em qualquer etapa o resultado for <b>11, 22 ou 33</b>, não reduza. São frequências especiais, que a nossa calculadora preserva automaticamente.</div></div>
+    </div>
+
+    <div class="caminhos">
+      <div class="ornament" aria-hidden="true" style="margin-top:56px"><i></i></div>
+      <p class="sec-eyebrow">Os arquétipos</p>
+      <h2 class="sec-title">Os <em>doze</em> Caminhos</h2>
+      <p class="caminhos-lede">Do 1 ao 33, cada número guarda um arquétipo — uma forma singular de existir, amar e realizar. Deslize e conheça um pouco de cada um; os três últimos, 11, 22 e 33, são os Números Mestres, vibrações tão elevadas que transcendem a redução comum.</p>
+      <div class="carrossel-wrap">
+        <button class="cnav prev" id="cprev" aria-label="Caminho anterior">‹</button>
+        <div class="carrossel" id="carrossel"></div>
+        <button class="cnav next" id="cnext" aria-label="Próximo caminho">›</button>
+      </div>
+      <div class="cdots" id="cdots"></div>
+    </div>
+  </section>
+
+  <footer><div class="fsun" aria-hidden="true"></div><b>by @matrixdodestino</b><br>Numerologia · O Guia dos Números do Destino</footer>
+</div>
+
+<script>
+/* ===== VENDA (Caminho de Vida) =====
+   >>> TROQUE pelo seu número de WhatsApp com DDI, só dígitos. Ex: '5511999998888' <<< */
+const WHATSAPP='5514996056079';
+const PRECO='R$ 29,90';
+function wppLink(num, nome){
+  const msg='Oi! Quero desbloquear a minha leitura completa do Caminho de Vida'+(num?(' '+num):'')+(nome?(' (nome: '+nome+')'):'')+' ✨';
+  return 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg);
+}
+/* mensagem geral do botão "Faça sua leitura" */
+function wppLeitura(){
+  const msg='Oi! Quero fazer a minha leitura personalizada do Caminho de Vida ('+PRECO+') ✨';
+  return 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg);
+}
+(function(){ const b=document.getElementById('cta-leitura'); if(b) b.href=wppLeitura(); })();
+/* devolve ~metade de um texto, cortando em um limite de palavra */
+function metade(txt){
+  const alvo=Math.floor(txt.length*0.5);
+  let i=txt.indexOf(' ', alvo); if(i<0) i=txt.length;
+  return txt.slice(0,i).trim().replace(/[.,;:]$/,'')+'…';
+}
+
+/* ===== MOTOR: Caminho de Vida ===== */
+function reduzirNum(n){ while(n>9 && n!==11 && n!==22 && n!==33){ n=String(n).split('').reduce((a,d)=>a+Number(d),0);} return n; }
+function somaDig(n){ return String(n).split('').reduce((a,d)=>a+Number(d),0); }
+function calcular(dia,mes,ano){
+  const d=reduzirNum(dia), m=reduzirNum(mes), a=reduzirNum(somaDig(ano));
+  const total=d+m+a, cv=reduzirNum(total);
+  return {d,m,a,total,cv};
+}
+
+/* ===== NÚMEROS (do e-book) ===== */
+const NUM={
+ 1:{arqui:"O Pioneiro",titulo:"O Líder",chaves:["Independente","Inovador","Assertivo","Ambicioso"],
+    desc:"O 1 é a força primordial da criação — a centelha que inicia todos os ciclos. Quem carrega essa vibração veio ao mundo para abrir caminhos, liderar e exercer sua individualidade de forma plena. Há uma coragem inata em você para enfrentar o desconhecido e estabelecer novos padrões.",
+    missao:"Desenvolver confiança, liderança e autossuficiência. Você está aqui para ensinar o mundo que é possível trilhar caminhos únicos com coragem e originalidade.",
+    carreira:"Empreendedorismo, gestão, cargos executivos, pioneirismo em qualquer área. Melhor quando trabalha com autonomia e pode tomar decisões independentes.",
+    desafio:"Combater a teimosia, o ego inflado e a dificuldade de aceitar orientações. Aprender a equilibrar independência com interdependência.",
+    compat:"3, 5 e 7 — que respeitam sua necessidade de espaço e acompanham seu ritmo acelerado."},
+ 2:{arqui:"O Harmonizador",titulo:"O Diplomata",chaves:["Cooperativo","Sensível","Empático","Pacífico"],
+    desc:"O 2 é a vibração da união, da parceria e da sensibilidade profunda. Se você é um 2, possui um dom natural para perceber as necessidades alheias e mediar conflitos com graça e diplomacia. Sua força não está na imposição, mas na capacidade de criar pontes entre mundos opostos.",
+    missao:"Criar harmonia por meio da cooperação e da sensibilidade emocional. Sua presença pacifica ambientes e inspira conexões genuínas entre pessoas.",
+    carreira:"Aconselhamento, diplomacia, serviço social, psicologia, artes que exijam sensibilidade. Brilha em trabalho em equipe e papéis de suporte estratégico.",
+    desafio:"Aprender a impor limites saudáveis, superar a indecisão e evitar que a bondade seja explorada. Desenvolver autoconfiança sem perder a empatia.",
+    compat:"6 e 9 — que reciprocam seu cuidado e valorizam a harmonia tanto quanto você."},
+ 3:{arqui:"O Criativo",titulo:"O Comunicador",chaves:["Criativo","Expressivo","Otimista","Social"],
+    desc:"O 3 pulsa com a energia da expressão criativa, do otimismo e da alegria de viver. Quem vibra nesta frequência tem um talento natural para comunicar ideias de forma envolvente, inspirar pessoas ao redor e encontrar beleza nas pequenas coisas da vida.",
+    missao:"Abraçar a alegria e a expressão honesta. Você está aqui para elevar o espírito humano por meio da arte, da palavra e da criatividade em todas as suas formas.",
+    carreira:"Artes, escrita, comunicação, teatro, música, oratória, ensino criativo. Qualquer campo onde a expressão pessoal seja o centro.",
+    desafio:"Manter o foco, evitar dispersão criativa e superar a tendência de superficialidade. Canalizar a energia abundante para projetos com propósito e profundidade.",
+    compat:"1 e 5 — que acompanham sua energia dinâmica e natureza expressiva."},
+ 4:{arqui:"O Artesão",titulo:"O Construtor",chaves:["Estável","Prático","Leal","Disciplinado"],
+    desc:"O 4 é a vibração da fundação sólida, do trabalho metódico e da confiabilidade inabalável. Se você é um 4, seu dom é construir — estruturas, sistemas, relacionamentos e legados que resistem ao tempo. Você é a pedra angular sobre a qual os outros podem apoiar-se.",
+    missao:"Construir estabilidade por meio do esforço disciplinado e da responsabilidade. Criar bases sólidas que sirvam não só a você, mas a toda a sua comunidade.",
+    carreira:"Engenharia, arquitetura, finanças, contabilidade, gestão de projetos, construção. Excele em funções que requerem planejamento meticuloso e atenção aos detalhes.",
+    desafio:"Superar a rigidez e o medo da mudança. Aprender que flexibilidade não é fraqueza — é a capacidade de adaptar a estrutura sem destruí-la.",
+    compat:"2 e 8 — que apreciam sua devoção e compartilham valores de estabilidade e comprometimento."},
+ 5:{arqui:"O Explorador da Liberdade",titulo:"O Aventureiro",chaves:["Livre","Dinâmico","Versátil","Curioso"],
+    desc:"O 5 é a vibração da liberdade, da mudança e da curiosidade insaciável. Quem carrega essa energia é um explorador nato — alguém que precisa experimentar a vida em toda a sua multiplicidade para encontrar significado. A variedade não é capricho: é necessidade da alma.",
+    missao:"Abraçar a mudança e aprender disciplina dentro da liberdade. Seu propósito é demonstrar que é possível viver plenamente e com propósito sem se prender a estruturas rígidas.",
+    carreira:"Viagens, marketing, relações públicas, jornalismo, eventos, vendas, qualquer área que combine comunicação com dinamismo e contato com pessoas diversas.",
+    desafio:"Combater a impulsividade, o escapismo e o medo de compromisso. Aprender que a liberdade mais profunda vem de dentro, não de circunstâncias externas.",
+    compat:"1 e 7 — que respeitam sua necessidade de independência e acompanham seu espírito inquieto."},
+ 6:{arqui:"O Guardião",titulo:"O Nutridor",chaves:["Compassivo","Protetor","Responsável","Leal"],
+    desc:"O 6 é a vibração do amor incondicional, da responsabilidade e do serviço à família e à comunidade. Quem vibra nessa frequência possui uma capacidade extraordinária de cuidar, proteger e criar harmonia nos ambientes por onde passa. Sua presença traz calor e sentido de pertencimento.",
+    missao:"Servir aos outros com amor genuíno e criar harmonia na família e na comunidade. Seu propósito está na construção de laços afetivos profundos e na criação de espaços seguros.",
+    carreira:"Saúde, educação, terapia, assistência social, design de interiores, culinária, qualquer área que envolva cuidar do bem-estar alheio.",
+    desafio:"Evitar o excesso de autossacrifício e o hábito de interferir nas escolhas dos outros. Aprender que cuidar de si mesmo é tão sagrado quanto cuidar do próximo.",
+    compat:"2 e 9 — que compartilham sua dedicação ao bem coletivo e valorizam a profundidade nos relacionamentos."},
+ 7:{arqui:"O Sábio Interior",titulo:"O Buscador",chaves:["Introspectivo","Analítico","Espiritual","Curioso"],
+    desc:"O 7 é a vibração da busca pela verdade, da contemplação e do conhecimento profundo. Quem carrega esse número é um pensador nato, atraído por mistérios, filosofia e questões que transcendem a superfície da realidade. A solidão não é um fardo — é o espaço sagrado onde você se renova.",
+    missao:"Buscar a verdade, desenvolver sabedoria interior e conexão espiritual. Sua jornada é de dentro para fora — descobrir o mistério que reside no interior para depois iluminar o mundo.",
+    carreira:"Ciência, pesquisa, filosofia, espiritualidade, psicologia, escrita analítica, tecnologia, qualquer área que exija pensamento profundo e investigação rigorosa.",
+    desafio:"Superar a tendência ao isolamento excessivo e ao ceticismo paralisante. Aprender a compartilhar os insights conquistados com o mundo sem se sentir vulnerável.",
+    compat:"5 e 1 — que respeitam sua necessidade de espaço e independência intelectual."},
+ 8:{arqui:"O Influenciador",titulo:"O Poderoso",chaves:["Ambicioso","Autoritativo","Estratégico","Disciplinado"],
+    desc:"O 8 é a vibração do poder material, da abundância e da autoridade. Quem carrega esse número veio equipado com uma capacidade extraordinária de manifestar sonhos em realidade, gerenciar recursos e alcançar sucesso no mundo material. O 8 deitado é o símbolo do infinito — o ciclo eterno de dar e receber.",
+    missao:"Dominar o sucesso material com integridade e usar sua influência para o bem coletivo. Sua lição mais profunda é que verdadeiro poder é aquele exercido com ética e equilíbrio.",
+    carreira:"Negócios, finanças, direito, gestão executiva, investimentos, política. Excele em qualquer posição que envolva poder, estratégia e tomada de decisões de alto impacto.",
+    desafio:"Evitar lutas de poder, materialismo excessivo e o medo de perder controle. Equilibrar ambição com generosidade e aprender que abundância real inclui o bem-estar emocional.",
+    compat:"2 e 4 — que oferecem suporte emocional e estabilidade prática para equilibrar a intensidade do 8."},
+ 9:{arqui:"O Sábio Universal",titulo:"O Humanitário",chaves:["Compassivo","Idealista","Generoso","Universal"],
+    desc:"O 9 é o número da conclusão, da sabedoria acumulada e do amor universal. Quem vibra nessa frequência carrega a síntese de todas as experiências dos números anteriores. Há em você uma compreensão profunda do sofrimento humano e uma vocação genuína para servir a causas maiores do que si mesmo.",
+    missao:"Servir à humanidade com compaixão e sabedoria. Sua jornada envolve aprender a soltar o que foi, abraçar o perdão e contribuir para o mundo de uma forma que transcenda o pessoal.",
+    carreira:"ONGs, ajuda humanitária, artes com propósito social, espiritualidade, ensino, medicina alternativa. Qualquer missão que envolva curar, transformar ou elevar.",
+    desafio:"Superar feridas emocionais antigas, o ressentimento e expectativas irreais. Aprender a equilibrar idealismo com praticidade e a cuidar de si com a mesma generosidade que cuida do mundo.",
+    compat:"6 e 2 — que compartilham seu altruísmo e apreciam a profundidade emocional dos relacionamentos."},
+ 11:{master:true,arqui:"O Iluminador",titulo:"O Curador Inspirado",reduzida:"2 — parceria, diplomacia",chaves:["Intuição","Visão","Sensibilidade","Liderança espiritual"],
+    desc:"O 11 é o primeiro Número Mestre e o Portal da Intuição. Quem carrega o 11 possui uma conexão direta com o plano espiritual, percepção aguçada das energias sutis e uma missão de inspirar e iluminar os outros. A dualidade do 1+1 cria uma tensão criativa entre a individualidade e a necessidade de servir — essa tensão, quando integrada, gera sabedoria extraordinária.",
+    missao:"Desenvolver e integrar a sua percepção espiritual à vida prática, tornando-se um farol que inspira, cura e ilumina o caminho dos outros. Você está aqui para transformar sensibilidade em sabedoria a serviço do coletivo.",
+    carreira:"Aconselhamento, oratória inspiradora, ensino espiritual, terapias e cura — qualquer campo onde a sua intuição possa servir de guia e orientação para as pessoas.",
+    desafio:"Superar a sensibilidade extrema e o idealismo em excesso, aprendendo a ancorar as suas visões elevadas no chão da realidade cotidiana sem se deixar consumir pela ansiedade.",
+    compat:"2 e 6 — que compreendem a sua natureza complexa e a sua necessidade profunda de conexão espiritual e emocional.",
+    baixa:"Ansiedade",alta:"Intuição"},
+ 22:{master:true,arqui:"O Mestre Construtor",titulo:"O Arquiteto Visionário",reduzida:"4 — estrutura, construção",chaves:["Visão prática","Liderança","Legado","Manifestação"],
+    desc:"O 22 é o mais poderoso de todos os números — o Arquiteto Visionário. Combina a intuição espiritual do 11 com a capacidade prática do 4, criando um potencial único para transformar visões grandiosas em realidades concretas. O 22 não apenas sonha — ele constrói. Em larga escala e com impacto duradouro.",
+    missao:"Transformar visões grandiosas em realidade concreta, usando as suas mãos e a sua mente para construir e melhorar o mundo em larga escala. O seu legado se mede pelo impacto duradouro daquilo que você ergue.",
+    carreira:"Arquitetura, grandes operações de negócios, urbanismo, gestão de projetos de impacto — campos que exigem, ao mesmo tempo, visão elevada e capacidade prática de execução.",
+    desafio:"Administrar as expectativas altíssimas que você deposita em si e nos outros, sem cair na rigidez nem se esgotar na busca incansável por realizar tudo o que imagina.",
+    compat:"4 e 8 — que compreendem a sua natureza ambiciosa e sustentam os seus sonhos com solidez e comprometimento.",
+    baixa:"Rigidez",alta:"Construção"},
+ 33:{master:true,arqui:"O Mestre Professor",titulo:"A Compaixão Universal",reduzida:"6 — amor, serviço",chaves:["Compaixão","Ensino","Cura","Amor incondicional"],
+    desc:"O 33 é o número da compaixão universal em sua expressão mais elevada. Combina o amor e o cuidado do 6 com a sabedoria espiritual, criando um ser profundamente dedicado ao ensino, à cura e ao serviço altruísta. É considerado a frequência mais espiritualmente avançada dos três Números Mestres.",
+    missao:"Ensinar, curar e iluminar — dedicar a sua vida ao serviço espiritual e à elevação de todos que cruzam o seu caminho, trazendo luz onde havia sombra.",
+    carreira:"Educação, artes de cura, liderança espiritual e mentoria — qualquer campo em que você possa orientar, curar e inspirar pessoas em direção à sua melhor versão.",
+    desafio:"Equilibrar a sua entrega altruísta com o autocuidado, para não esvaziar as próprias forças cuidando de todos ao redor e caindo na exaustão do martírio.",
+    compat:"6 e 9 — que respeitam a sua necessidade de curar e elevar os outros, e caminham ao seu lado no serviço ao mundo.",
+    baixa:"Martírio",alta:"Iluminação"}
+};
+
+/* ===== CARROSSEL: os doze caminhos ===== */
+(function(){
+  const track=document.getElementById('carrossel');
+  if(!track) return;
+  const dotsWrap=document.getElementById('cdots');
+  const prev=document.getElementById('cprev'), next=document.getElementById('cnext');
+  function primeiraFrase(txt){
+    let f=txt.split('. ')[0].trim();
+    if(!/[.!?…]$/.test(f)) f+='.';
+    if(f.length>150){ let i=f.indexOf(' ',140); if(i<0)i=150; f=f.slice(0,i).replace(/[.,;:]$/,'')+'…'; }
+    return f;
+  }
+  const ordem=Object.keys(NUM).map(Number).sort((a,b)=>a-b);
+  ordem.forEach(n=>{
+    const info=NUM[n];
+    const card=document.createElement('div');
+    card.className='ccard'+(info.master?' master':'');
+    card.innerHTML=
+      '<div class="corb"><div class="cnum">'+n+'</div></div>'+
+      '<div class="carqui">'+info.arqui+'</div>'+
+      '<div class="ctit">'+info.titulo+'</div>'+
+      (info.master?'<div class="ctag">Número Mestre</div>':'')+
+      '<p class="cteaser">'+primeiraFrase(info.desc)+'</p>';
+    track.appendChild(card);
+  });
+  const cards=Array.from(track.children);
+  cards.forEach((c,i)=>{
+    const d=document.createElement('button');
+    d.className='cdot'; d.setAttribute('aria-label','Ir ao caminho '+ordem[i]);
+    d.addEventListener('click',()=>irPara(i));
+    dotsWrap.appendChild(d);
+  });
+  const dots=Array.from(dotsWrap.children);
+  function passo(){ return cards[0].offsetWidth + 14; }
+  function ativo(){ return Math.round(track.scrollLeft/passo()); }
+  function irPara(i){ i=Math.max(0,Math.min(cards.length-1,i)); track.scrollTo({left:i*passo(),behavior:'smooth'}); }
+  function sync(){
+    const a=ativo();
+    dots.forEach((d,i)=>d.classList.toggle('on',i===a));
+    prev.disabled = track.scrollLeft<=2;
+    next.disabled = track.scrollLeft>=track.scrollWidth-track.clientWidth-2;
+  }
+  prev.addEventListener('click',()=>irPara(ativo()-1));
+  next.addEventListener('click',()=>irPara(ativo()+1));
+  let t; track.addEventListener('scroll',()=>{clearTimeout(t); t=setTimeout(sync,60);});
+  addEventListener('resize',sync);
+  sync();
+})();
+
+/* ===== RENDER ===== */
+function render(r, nome){
+  const info=NUM[r.cv];
+  const el=document.getElementById('result');
+  const first = nome ? nome.trim().split(' ')[0] : '';
+  const chips=info.chaves.map(c=>'<span class="chip">'+c+'</span>').join('');
+  const passos=
+    '<div class="steps"><h3>Como chegamos ao seu número</h3>'+
+    '<div class="row"><span class="lab">Dia</span><span class="calc">'+r.dia+'</span><span class="res">'+r.d+'</span></div>'+
+    '<div class="row"><span class="lab">Mês</span><span class="calc">'+r.mes+'</span><span class="res">'+r.m+'</span></div>'+
+    '<div class="row"><span class="lab">Ano</span><span class="calc">'+r.ano+'</span><span class="res">'+r.a+'</span></div>'+
+    '<div class="row final"><span class="lab">Caminho de Vida</span><span class="calc">'+r.d+' + '+r.m+' + '+r.a+' = '+r.total+'</span><span class="res">'+r.cv+'</span></div>'+
+    '</div>';
+
+  const topicos=[
+    {label:'A sua essência', texto:info.desc, full:true},
+    {label:'Missão de Vida', texto:metade(info.missao)},
+    {label:'Carreira & Talentos', texto:metade(info.carreira)},
+    {label:'O seu Desafio Central', texto:metade(info.desafio)},
+    {label:'No Amor', texto:metade('Há afinidade natural com os caminhos '+info.compat)}
+  ];
+  const topicosHTML=topicos.map((t,i)=>
+    '<div class="sec'+(t.full?' desc':'')+'"><div class="h">'+t.label+'</div><p>'+t.texto+'</p></div>'
+  ).join('');
+  const corpo=
+    '<div class="sections locked-preview">'+
+      topicosHTML+
+      '<div class="fade-mask"></div>'+
+    '</div>'+
+    '<div class="lock">'+
+      '<div class="lock-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>'+
+      '<h3>Continue a sua leitura</h3>'+
+      '<p class="lock-sub">Você viu apenas o começo. A leitura completa do <b>Caminho de Vida '+r.cv+'</b> revela, em um PDF preparado especialmente para você:</p>'+
+      '<ul class="lock-list">'+
+        '<li>A sua Missão de Vida por inteiro</li>'+
+        '<li>Carreira &amp; Talentos ideais para a sua vibração</li>'+
+        '<li>O seu Desafio Central — e como superá-lo</li>'+
+        '<li>A sombra que você veio integrar</li>'+
+        '<li>Compatibilidade e padrões no amor</li>'+
+        '<li>Orientação prática para viver o seu número</li>'+
+      '</ul>'+
+      '<a class="buy" href="'+wppLink(r.cv, first)+'" target="_blank" rel="noopener">Desbloquear minha leitura — '+PRECO+'</a>'+
+      '<p class="lock-note">Entrega em PDF · Leitura personalizada · Feita por @matrixdodestino</p>'+
+    '</div>';
+
+  el.innerHTML=
+    '<div class="card">'+
+      '<div class="reveal">'+
+        (first?'<p class="greet">'+first+', seu caminho é</p>':'<p class="greet">O seu caminho é</p>')+
+        '<p class="kicker">Número do Caminho de Vida</p>'+
+        '<div class="bignum'+(info.master?' master':'')+'"><div class="glow"></div><div class="halo"></div><div class="ring"></div><span>'+r.cv+'</span></div>'+
+        '<div class="arqui">'+info.arqui+'</div>'+
+        '<div class="titulo">'+info.titulo+'</div>'+
+        (info.master?'<div class="master-tag">Número Mestre</div>':'')+
+        '<div class="chaves">'+chips+'</div>'+
+      '</div>'+
+      passos+
+      corpo+
+    '</div>';
+  el.classList.add('show');
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+/* ===== FORM ===== */
+function fill(id,from,to){const s=document.getElementById(id);for(let i=from;i<=to;i++){const o=document.createElement('option');o.value=i;o.textContent=i;s.appendChild(o);}}
+fill('dia',1,31); fill('mes',1,12);
+(function(){const s=document.getElementById('ano'),y=new Date().getFullYear();for(let i=y;i>=1920;i--){const o=document.createElement('option');o.value=i;o.textContent=i;s.appendChild(o);}})();
+
+document.getElementById('go').addEventListener('click',()=>{
+  const dia=+document.getElementById('dia').value, mes=+document.getElementById('mes').value, ano=+document.getElementById('ano').value;
+  const err=document.getElementById('err');
+  const dim=new Date(ano,mes,0).getDate();
+  if(dia>dim){ err.textContent="Esse mês tem apenas "+dim+" dias. Ajuste a data para revelar seu número."; return; }
+  err.textContent="";
+  const r=calcular(dia,mes,ano);
+  r.dia=String(dia).padStart(2,'0'); r.mes=String(mes).padStart(2,'0'); r.ano=String(ano);
+  render(r, document.getElementById('nome').value);
+});
+
+/* ===== PARTÍCULAS DOURADAS ===== */
+(function(){
+  const c=document.getElementById('motes'), x=c.getContext('2d');
+  const reduz=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w,h,dpr,motes;
+  function init(){
+    dpr=Math.min(devicePixelRatio||1,2); w=innerWidth; h=innerHeight;
+    c.width=w*dpr; c.height=h*dpr; c.style.width=w+'px'; c.style.height=h+'px'; x.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.min(70,Math.floor(w*h/16000));
+    motes=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2.4+.6,
+      vy:-(Math.random()*.25+.06), ph:Math.random()*6.28, sp:Math.random()*.012+.004, sw:Math.random()*.4+.1}));
+  }
+  function frame(){
+    x.clearRect(0,0,w,h);
+    for(const m of motes){
+      if(!reduz){ m.y+=m.vy; m.ph+=m.sp; m.x+=Math.sin(m.ph)*m.sw; if(m.y<-10){m.y=h+10; m.x=Math.random()*w;} }
+      const o=.35+Math.abs(Math.sin(m.ph))*.55, R=m.r*4;
+      const g=x.createRadialGradient(m.x,m.y,0,m.x,m.y,R);
+      g.addColorStop(0,'rgba(255,250,220,'+o+')'); g.addColorStop(.3,'rgba(255,196,60,'+(o*.8)+')'); g.addColorStop(1,'rgba(255,140,30,0)');
+      x.fillStyle=g; x.beginPath(); x.arc(m.x,m.y,R,0,6.283); x.fill();
+    }
+    if(!reduz) requestAnimationFrame(frame);
+  }
+  init(); frame(); addEventListener('resize',()=>{init(); if(reduz) frame();});
+})();
+</script>
+</body>
+</html>
