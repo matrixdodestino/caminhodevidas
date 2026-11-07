@@ -362,6 +362,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       </ul>
       <a class="btn btn-sol" data-comprar href="#calcular">Quero minha leitura</a>
       <p class="seg" data-seg>Feita por @matrixdodestino</p>
+      <p class="seg">Já comprou? <a href="https://caminhodevida.matrixdodestino.workers.dev" style="color:var(--ember)">Abrir minha leitura →</a></p>
     </div>
   </div>
 </section>
@@ -409,7 +410,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 /* ============ CONFIGURAÇÃO · troque aqui ============ */
 const CONFIG = {
   PRECO:    'R$ 29,90',
-  HOTMART:  '',                 // cole aqui o link do checkout quando o produto estiver na Hotmart
+  HOTMART:  'https://pay.hotmart.com/H108386377F',   // checkout da Hotmart
   WHATSAPP: '5514996056079'     // usado enquanto não houver link da Hotmart
 };
 
@@ -514,7 +515,7 @@ document.querySelectorAll('[data-preco]').forEach(e=>e.textContent=CONFIG.PRECO)
   document.querySelectorAll('[data-comprar]').forEach(a=>{ a.href=linkCompra(); a.target='_blank'; a.rel='noopener'; });
   if(temHotmart){
     const s=document.querySelector('[data-seg]'); if(s) s.textContent='Pagamento seguro pela Hotmart · entrega imediata em PDF';
-    const e=document.querySelector('[data-entrega]'); if(e) e.textContent='Na hora. Depois do pagamento, você recebe por e-mail o link para entrar com o seu e-mail, informar nome e data de nascimento e baixar o PDF na mesma hora.';
+    const e=document.querySelector('[data-entrega]'); if(e) e.textContent='Na hora. Depois do pagamento, você entra na sua página de leitura com o e-mail da compra, digita o nome e a data de nascimento e baixa o PDF na mesma hora. O link aparece na página de obrigado e no e-mail de confirmação.';
   } else {
     const s=document.querySelector('[data-seg]'); if(s) s.textContent='Pedido pelo WhatsApp · entrega em PDF';
   }
